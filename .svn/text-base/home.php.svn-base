@@ -1,0 +1,37 @@
+<?php get_header(); ?>
+<section id="content" class="front list-page">
+    <?php    $my_query = new WP_Query('category_name=feature&posts_per_page=5');
+    $do_not_duplicate = array();
+    if ($my_query->have_posts()) :
+        ?><div id="slides"><div id="pager-nav"></div><div class="pager" id="pager-prev"><</div><div class="pager" id="pager-next">></div><div id="featured-articles">
+        <?php
+        while ($my_query->have_posts()) : $my_query->the_post();
+            $do_not_duplicate[$post->ID] = $post->ID;
+            ?>
+            <?php 
+            get_template_part('review', 'index'); ?>
+        <?php endwhile; ?>
+        </div><!--/#featured-articles-->
+        </div><!--/#slides-->
+    <?php endif; ?>
+    <div id="articles">
+        <?php
+        if (have_posts()) : while (have_posts()) : the_post();
+                if (in_array($post->ID, $do_not_duplicate) || has_category('blog')):
+                    continue;
+                endif;
+                ?>
+                <?php
+                $type = get_post_format() == false ? 'blurb' : get_post_format();
+                get_template_part('review', 'blurb') ?>
+            <?php
+            endwhile;
+                        else:
+                get_template_part('review', '404');
+        endif;
+        ?>
+    </div><!--/#articles -->
+    <div id="nextPrev"><?php print (previous_posts_link('« Newer Entries', 0)); ?><?php print (next_posts_link('Older Entries »', 0)); ?></div>
+</section><!--/#content-->
+<?php get_sidebar(); ?>
+<?php get_footer(); ?>

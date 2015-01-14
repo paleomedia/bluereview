@@ -1,0 +1,115 @@
+<?php
+
+/**
+ * Adds Blue Author Twitter widget.
+ */
+class tweets_by_author extends WP_Widget {
+
+    /**
+     * Register widget with WordPress.
+     */
+    public function __construct() {
+        parent::__construct(
+                'tweets_by_author', // Base ID
+                'Blue Author Tweets Widget', // Name
+                array('description' => __('Contextual tweets by post/page author Or not.', 'blue review'),) // Args
+        );
+    }
+
+    /**
+     * Front-end display of widget.
+     *
+     * @see WP_Widget::widget()
+     *
+     * @param array $args     Widget arguments.
+     * @param array $instance Saved values from database.
+     */
+    public function widget($args, $instance) {
+        global $post;
+        extract($args);
+        $themeOptions = get_option('blue_theme_options');
+        $fallbackYN = $instance['fallback'];
+        $fallback = $themeOptions['twitterHandle'];
+        $howMany = $instance['howMany'];
+        if ($instance['show'] == 'site'):
+        $author = $fallback;
+        else:
+        if ($instance['fallback'] == 'default'): $author = get_the_author_meta( 'twitter', $post->post_author )? get_the_author_meta( 'twitter', $post->post_author ):$fallback;
+        else:
+            $author = get_the_author_meta( 'twitter', $post->post_author );
+        endif;
+        endif;
+        if($author != ""):
+        $title = apply_filters('widget_title', $instance['title']);
+        $jsonurl = "http://api.twitter.com/1/statuses/user_timeline.json?screen_name=".$author."&count=".$howMany."&include_rts=false&exclude_replies=true&&trim_user=true";
+        $json = file_get_contents($jsonurl,0,null,null);
+        $json_output = (array) json_decode($json);
+        ?><?php
+        echo $before_widget;
+        if (!empty($title))
+            echo $before_title . $title . $after_title;
+        ?><ul><?php
+        foreach ( $json_output as $text ):?>
+            <li class="tweet"><?php echo $text->text ?></li>
+        <?php endforeach;?></ul><p class="notes"><a class="" href="http://twitter.com/<?php echo $author; ?>">Follow @<?php echo $author; ?> on twitter</a></p><?php
+        echo $after_widget;
+        endif;
+    }
+
+    /**
+     * Sanitize widget form values as they are saved.
+     *
+     * @see WP_Widget::update()
+     *
+     * @param array $new_instance Values just sent to be saved.
+     * @param array $old_instance Previously saved values from database.
+     *
+     * @return array Updated safe values to be saved.
+     */
+    public function update($new_instance, $old_instance) {
+        $instance = array();
+        $instance['title'] = strip_tags($new_instance['title']);
+        if (is_numeric($new_instance['howMany'])): $instance['howMany'] = strip_tags($new_instance['howMany']); endif;
+        $instance['fallback'] = strip_tags($new_instance['fallback']);
+        $instance['show'] = strip_tags($new_instance['show']);
+
+        return $instance;
+    }
+
+    /**
+     * Back-end widget form.
+     *
+     * @see WP_Widget::form()
+     *
+     * @param array $instance Previously saved values from database.
+     */
+    public function form($instance) {
+        $blue_custom_options = get_option('blue_theme_options');
+        $title = isset($instance['title']) ? $instance['title'] : __('Recent Tweets', 'blue review');
+        $howMany = isset($instance['howMany']) ? $instance['howMany'] : __('5', 'blue review');
+        $fallback = isset($instance['fallback']) ? $instance['fallback'] : __($blue_custom_options_['twitter'], 'blue review');
+        ?>
+
+        <p>
+            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:', 'blue review'); ?></label> 
+            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
+
+            <label for="<?php echo $this->get_field_id('howMany'); ?>"><?php _e('How Many:', 'blue review'); ?></label> 
+            <input class="widefat" id="<?php echo $this->get_field_id('howMany'); ?>" name="<?php echo $this->get_field_name('howMany'); ?>" type="text" value="<?php echo esc_attr($howMany); ?>" />
+
+		<label for="<?php echo $this->get_field_id('show'); ?>"><?php _e( 'What feed?' ); ?></label>
+		<select name="<?php echo $this->get_field_name('show'); ?>" id="<?php echo $this->get_field_id('show'); ?>" class="widefat">
+			<option value="author"<?php selected( $instance['show'], 'author' ); ?>><?php _e( 'Show contextual author' ); ?></option>
+			<option value="site"<?php selected( $instance['show'], 'site' ); ?>><?php _e( 'Show default' ); ?></option>
+		</select>
+		<label for="<?php echo $this->get_field_id('fallback'); ?>"><?php _e( 'If contextual author is missing' ); ?></label>
+		<select name="<?php echo $this->get_field_name('fallback'); ?>" id="<?php echo $this->get_field_id('fallback'); ?>" class="widefat">
+			<option value="hide"<?php selected( $instance['fallback'], 'hide' ); ?>><?php _e( 'Hide Widget' ); ?></option>
+			<option value="default"<?php selected( $instance['fallback'], 'default' ); ?>><?php _e( 'Show default' ); ?></option>
+		</select>
+        </p>
+
+        <?php
+    }
+
+}?>

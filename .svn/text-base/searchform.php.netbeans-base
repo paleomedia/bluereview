@@ -1,0 +1,8 @@
+<input class="search-but" value="search" type="button" />    
+<form id="searchform" method="get" action="/index.php">
+        
+      <div class="hide-form">
+         <input type="text" name="s" id="s" />
+         <input class="search-sub" value="go" type="submit" />
+      </div>
+     </form>

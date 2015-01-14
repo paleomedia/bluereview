@@ -1,0 +1,13 @@
+<article role="article" <?php post_class(get_post_format() . ' page single'); ?>>
+    <header>
+        <hgroup>
+            <h1 class="entry-title"><?php the_title(); ?></h1>
+            <h2 class="subtitle"><?php (function_exists('the_subtitle')) ? the_subtitle() : '' ?></h2>
+        </hgroup>
+    </header><div class="side-bit"></div>
+    <div class="content">
+            <?php the_content(); ?>
+            <?php wp_link_pages(); ?>
+    </div><!--.content-->
+<?php comments_template('', true); ?>	
+</article> <!--.single-->

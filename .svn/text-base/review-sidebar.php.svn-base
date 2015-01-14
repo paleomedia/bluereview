@@ -1,0 +1,21 @@
+
+                    <li><ul class="cats"><?php
+                $cats = get_the_category($post->ID);
+                foreach ($cats as $key => $cat):
+                    if ((strtolower($cat->name) == 'feature') || ($cat->name == 'Uncategorized')):
+                        unset($cats[$key]);
+                    endif;
+                endforeach;
+                if (count($cats) > 0):
+                    $cats = array_slice($cats, 0, 1);
+                        ?><?php foreach ($cats as $cat): ?>
+                                    <li class="<?php echo $cat->slug ?>"><? echo $cat->name; ?></li><?php endforeach; ?><?php endif ?>
+                        </ul>
+                        <hgroup class="side-title">
+                            <h2 class="side-title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" rel="bookmark"><?php $postTitle = (get_the_title()) ? the_title() : 'untitled';
+                echo $postTitle;
+                    ?></a></h2>
+                <?php if (function_exists('the_subtitle') && (get_the_subtitle() != "")): ?> <h3 class="subtitle"><?php the_subtitle(); ?><?php endif ?></h3>
+                            <h3 class="author"><?php if(function_exists('coauthors')): coauthors(); else: the_author(); endif; ?></h3>
+                        </hgroup>	
+                        <div class="clear"></div></li>

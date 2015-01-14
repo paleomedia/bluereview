@@ -1,0 +1,210 @@
+
+.meta{
+    background-color: $white;
+    position: relative; 
+}
+.meta--image-logo{
+    max-width: 75%;
+}
+.meta--image-small{
+    display:none;
+}
+.meta--menu{
+    text-transform: uppercase;
+    width: 70%;
+    float: left; 
+    display: inline;
+    padding:.625em .625em .8em 0;
+    position: relative;
+    margin-left: 40px;
+    &:before{
+        content: url(images/crier.png);
+        display: block;
+        float: left;
+        position: absolute;
+        top: -9px;
+        left: -40px;
+    }
+}
+.meta--menu .current-menu-item:hover>a{
+    color:lightgrey;
+}
+.meta--head-social{
+    position: absolute;
+    top: 0;
+    right: 0;
+    text-align:right;
+    font-size: 1.2em;
+    padding: 1.25em .5em;
+    li{
+        display:inline-block;
+        margin-right:.6em;
+    }
+}
+.meta--search{
+    max-width: 20%;
+    .search-but{
+        display: none;
+    }
+}
+
+.meta--menu li ul{
+    display:none;
+}
+.meta--menu li:hover ul{
+    position:absolute;
+    display:block;
+    left:0;
+    background-color: $white;
+    z-index: 999;
+    li{
+        right: 0;
+    }
+}
+.meta--menu li, .meta--head-social li{
+    position: relative;
+    display:inline-block;
+    margin-right: .125em;
+}
+.meta--menu li{
+    color: $text-light-gray;
+    padding: .5em;
+    margin-right: -3px; 
+}
+.meta--menu li.current_page_item, .meta--menu li.current-menu-item{
+    color: $text-gray;
+    border-bottom: 1px solid $text-light-gray;
+}
+.meta--menu li a{
+    color: $text-light-gray;
+    text-decoration: none;
+    font-size: 1em 
+}
+.meta--menu li:hover>a{
+    color: $text-gray;
+}
+
+.meta--head-social li.search{
+    display: none;
+}
+
+/* Sticky Nav Styles */
+
+.sticky-nav {
+    -webkit-box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+    z-index: 9999;
+    position: fixed;
+    width: 100%;
+    left: 0; 
+    .meta--image-logo{
+        display: none;
+    }
+    .meta--menu:before{
+        top: 3px;
+    }
+    .meta--search{
+        display:none;
+    }
+    li.search{
+        display: inline-block;
+        max-width: 1.6em;
+        position: relative;
+    }
+    .search-form{
+        width:16em;
+        position:absolute;
+        right:0;
+        padding:.5em;
+        background-color:gray;
+        border-radius: 7px 0 7px 7px;
+        z-index: 999;
+    }
+    #s{
+        text-align: left;
+    }
+}
+
+.sticky-bar {
+    z-index: 9999;
+    position: fixed;
+    width: 100%;
+    top: 3em;
+    right:3em;
+}
+
+/* Social Icons for header */
+
+.meta--head-social ul li a { padding: 19px 0 0 40px; }
+
+.meta--head-social li.fb a { background: url('images/social-sprites.png') no-repeat -45px 0; }
+.meta--head-social li.tw a { background: url('images/social-sprites.png') no-repeat 0 0; }
+.meta--head-social li.bsu a { background: url('images/social-sprites.png') no-repeat -179px 0;  padding: 19px 0 0 49px; }
+.meta--head-social li.gplus a { background: url('images/social-sprites.png') no-repeat -90px 0; }
+.meta--head-social li.rss a { background: url('images/social-sprites.png') no-repeat -134px 0; }
+
+/* search form */
+
+input#s {
+    margin: 0;
+    font-size: 1em;
+    height: 1.5em; 
+    margin-left: .125em;
+    width: 230px;
+    text-align: right; 
+}
+
+.meta--search .search-form{
+    position: absolute;
+    z-index: 110;
+    top: 60px;
+    right: 12px;
+}
+
+li.search-form{
+    
+}
+
+input.search-sub {
+    display: none;
+}
+
+.meta--head-social .search-form{
+
+    input#s {
+        margin: 0;
+        -webkit-box-shadow: -2px 6px 6px rgba(0,0,0,0.2);
+        -moz-box-shadow: -2px 6px 6px rgba(0,0,0,0.2);
+        box-shadow: -2px 6px 6px rgba(0,0,0,0.2);
+        font-size: 1em;
+        float: left;
+        width: 80%;
+        height: 1.5em; 
+        margin-left: .125em;
+        position:relative;
+        z-index: 110;
+        border:none;
+    }
+
+    li.search-form{
+        max-width:1.6em;
+        position:relative;
+    }
+
+    input.search-but {
+        border: none;
+        background: url('images/search.png') #7f7f7f center no-repeat;
+        font-size: 1em;
+        text-indent: -9999px;
+        width: 1.25em;
+        height: 1.375em;
+        cursor: pointer;
+        color: transparent;
+    }
+
+    input.search-sub {
+        display: block;
+    }
+}

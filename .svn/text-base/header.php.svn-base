@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+    <head>
+        <meta charset="<?php bloginfo('charset'); ?>" />
+        <title><?php is_home() ? bloginfo('description') : wp_title(''); ?> | <?php bloginfo('name'); ?> </title>
+        <link rel="profile" href="http://gmpg.org/xfn/11" />
+        <link rel="stylesheet" href="<?php echo get_stylesheet_uri(); ?>" type="text/css" media="screen" />
+        <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+        <link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+        <meta name="viewport" content="width=device-width" /> 
+
+        <?php wp_head(); ?>
+    </head>
+    <body <?php body_class(); ?>>
+        <header id="header" role="banner">
+            <div id="site-info" class="constrain">
+                <a href="<?php echo home_url('/'); ?>" title="<?php echo esc_attr(get_bloginfo('name', 'display')); ?>" rel="home" <?php if (get_option(display_header_text())): ?> class="text" <?php endif; ?>><?php
+        $header_image = get_header_image();
+        if (!empty($header_image)) :
+            ?><img src="<?php echo get_template_directory_uri() ?>/images/header-notag.jpg" class="header-image-small" alt="<?php bloginfo('name'); ?>" />
+                                <img src="<?php echo esc_url($header_image); ?>" class="header-image-logo" width="<?php echo get_custom_header()->width; ?>" alt="<?php bloginfo('name'); ?>" />
+                            <?php endif; ?><span<?php if (!get_option(display_header_text())) : ?> class="hide-text"><?php endif;
+                        bloginfo('name'); ?></span></a>
+                    <h2 id="subhead" <?php if (!get_option(display_header_text())) : ?> class="hide-text"><?php endif;
+                        bloginfo('description'); ?></h2>
+                <div id="header-sticky-menu"><div class="constrain">
+                                <div id="menu-mobile" class="mobile-only"><h2 style="font-size:1.2em;">Navigation</h2></div><?php wp_nav_menu(array('container' => 'nav', 'container_class' => 'primary-nav', 'theme_location' => 'primary-navigation', 'fallback_cb' => 'wp_page_menu')); ?>
+                        <nav id="head-social"><ul>
+                                <?php $blue_custom_options = get_option('blue_theme_options'); ?>
+                                <?php if (($blue_custom_options['twitterYN'] == true) && ($blue_custom_options['twitterHandle'] != false)): ?>
+                                <li class="social tw"><a href="http://twitter.com/<?php echo $blue_custom_options['twitterHandle'] ?>"></a></li><?php endif; ?>
+                                <?php if (($blue_custom_options['facebookYN'] == true) && ($blue_custom_options['facebookURL'] != false)): ?>
+                                <li class="social fb"><a href="<? echo $blue_custom_options['facebookURL']; ?>"></a></li><?php endif; ?>
+<?php if ($blue_custom_options['rssYN'] == true): ?><li class="social rss"><a href="<?php echo bloginfo('rss2_url'); ?>"></a></li><?php endif; ?>
+                            <li class="search-form"><?php get_search_form(); ?></li></ul></nav></div></div><div class="clear"></div>
+            </div><!--.constrain-->
+        </header><!--/#header-->
+        <div id="main" class="constrain">
+<?php
+        // .constrain and body closed in index.php  ?>

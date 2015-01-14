@@ -1,0 +1,138 @@
+
+.featured--primary{
+    color: $white;
+    width: 100%;
+    img{
+        width: 100%;
+        border-radius: $border-pixels;
+    }
+    h1, h1 a, h2, a{
+        color: $white;
+    }
+    .article--subtitle{
+        font-size: 1em;
+    }
+    .article--image-wrap{
+        
+    }
+    .article{
+        padding: 0 20px 0 0;
+        position: relative; 
+        margin-bottom: 20px;
+    }
+    .article--meta-container{
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        max-height: 450px;
+    }
+    .article--meta{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        padding: 0 0 10px 15px;
+        @extend %gradient;
+        width: 100%;
+        border-bottom: 1px solid $text-gray;
+    }
+    .article--content{
+        display: none;
+    }
+}
+
+.featured--sidebar{
+    width: 100%;
+    float: right;
+    color: $text-gray;
+    img{
+        width: 100%;
+        border-radius: $border-pixels;
+    }
+    h1, h1 a{
+        padding: 0 0 10px 0;
+        color: $text-gray;
+        font-size: 1em;
+        font-weight: 300;
+    }
+    .article--subtitle, .article--author{
+        font-size: 1em;
+    }
+    .article{
+        margin-bottom: 20px;
+    }
+    .article:last-child{
+        margin-bottom: 0;
+    }
+    .article--meta-container{
+        max-height: 140px;
+        width: 60%;
+        float: left;
+        padding-right: 10px;
+    }
+    .article--meta{
+        
+    }
+    .article--author, .article--content{
+        display: none;
+    }
+}
+
+.featured--secondary{
+    @extend %clearfix;
+    color: $text-gray;
+    img{
+        width: 100%;
+        border-radius: $border-pixels;
+    }
+    h1, h1 a{
+        padding: 0 0 0 0;
+        color: $text-gray;
+        font-weight: 300;
+    }
+    .article--subtitle, .article--author{
+        font-size: 1em;
+    }
+    .article{
+        margin-right: 20px;
+    }
+    .article--meta{
+        padding: 0;
+    }
+    .article--meta-container{
+        max-height: 165px;
+    }
+    .article--author, .article--author a{
+        color: $text-light-gray;
+    }
+    .article--subtitle{
+        display: none;
+    }
+}
+.featured--secondary-wrap{
+    width: 50%;
+    float: left;
+}
+
+.print--sidebar{
+    img{
+        float: left;
+        padding: 5px 10px 5px 0;
+        max-width: 50%;
+        max-height: 300px;
+    }
+    .widgettitle{
+        background: none;
+        text-align: left;
+        text-transform: none;
+        color: $text-gray;
+        font-size: 24px;
+        padding: 0;
+    }
+    .print--item{
+        padding-bottom: 10px;
+    }
+    .print--blurb{
+        clear: left;
+        padding-left: 0;
+    }
+}

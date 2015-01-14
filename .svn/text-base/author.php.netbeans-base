@@ -1,0 +1,155 @@
+<?php get_header(); ?>
+<section id="content" class="author-page">
+    <div id="author-content-area">
+    <?php if (have_posts()) : the_post() ?>
+        <?php
+        $post_author = blue_author_info(get_the_author_meta('ID'));
+        $post_author['display-name'] = get_the_author_meta('display_name');
+        $post_author['email'] = get_the_author_meta('email');
+        $post_author['ID'] = get_the_author_meta('ID');
+        ?>
+        <div id="list-authors"><?php
+// prepare arguments
+
+    $args = array(
+        'role' => 'author',
+        'orderby' => 'login',
+        'order' => 'ASC',
+        'offset' => '',
+        'search' => '',
+        'number' => '16',
+        'count_total' => false,
+        'fields' => 'all',
+        'who' => ''
+    );
+
+    $authors = get_users($args);
+    if (!empty($authors)) {
+            ?><h2>The Blue Review Writers</h2><?php
+        echo '<ul>';
+        // loop through each author
+        foreach ($authors as $author) {
+            if (get_the_author() != $author->display_name):
+                // get all the user's data
+                ?>
+            <li class="user"><a href="/author/<?php echo $author->user_nicename; ?>" title="<?php echo $author->display_name; ?>"><?php echo get_blue_avatar($author->ID, 64); ?><br /><?php echo $author->display_name; ?></a></li>
+
+                        <?php
+                    endif;
+                }
+                echo '</ul>';
+            } else {
+                echo 'No authors found';
+            }
+            ?>
+
+        </div>
+        <div id="author-info" class="clear">
+            <div class="author-profile" rel="me">
+                <?php echo get_blue_avatar($post_author['ID'], '200'); ?>
+                <?php if ($post_author['twitter'] || $post_author['email'] || $post_author['gplus'] || $post_author['facebook']):
+                    ?>
+                <div class="author-box">        <ul id="author-social"><li class="notes">Contact author:</li>
+        <?php if ($post_author['twitter']) : ?>
+                                <li class="twitter">
+                                    <a href="http://twitter.com/<?php echo $post_author['twitter']; ?>" title="Follow <?php echo $post_author['display-name']; ?> on Twitter"></a>
+                                </li>
+                                <?php
+                            endif;
+                            if ($post_author['facebook']) :
+                                ?>
+                                <li class="facebook">
+                                    <a href="<?php echo $post_author['facebook']; ?>" title="Like <?php echo $post_author['display-name']; ?> on facebook"></a>
+                                </li>
+                                <?php
+                            endif;
+                            if ($post_author['gplus']) :
+                                ?>
+                                <li class="gplus">
+                                    <a href="<?php echo $post_author['gplus']; ?>" title="Follow <?php echo $post_author['display-name']; ?> on Google Plus" /></a>
+                                </li>
+                                <?php
+                            endif;
+                            if ($post_author['email']) :
+                                ?>
+                                <li class="email">
+                                    <a href="mailto:<?php echo $post_author['email']; ?>" title="email <?php $post_author['display-name']; ?>"></a>
+                                </li>
+        <?php endif; ?> 
+                        </ul></div>
+                    <div id="author-publications">                            <ul id="publications">
+                        <?php if (!empty($post_author['books'])):foreach($post_author['books'] as $book): ?>
+                            <li class="publications"><?php if ((!empty($book['url'])) || (!empty($book['cover'])) || (!empty($book['title']))) :
+                                if (!empty($book['url'])):?>
+                                    <a href="<?php echo $book['url']; ?>">
+                                <? endif; ?>
+                                <?php if (!empty($book['cover'])) : ?>
+                                    <img class="pubs" src="<?php echo $book['cover']; ?>" />
+                                <?php else: ?>
+                                    <img class="pubs" src="<?php echo get_template_directory_uri() ?>/images/pub.jpg" />
+                                <?php endif; ?>
+                                <?php if (!empty($book['title'])) : ?>
+                                    <p><?php echo $book['title']; ?></p><?php if (!empty($book['url'])) : ?></a><?php endif; ?>
+                                    <?php endif; ?>
+                                        <?php endif; ?>
+                            </li>
+                        <? endforeach;
+                        endif;
+                        ?></ul>
+                    </div>
+                    <div class="clear" id="author-tweets">
+                        <?php
+                        $author_tweets = $post_author['twitter'];
+                        if ($author_tweets != ""):
+                            $title = apply_filters('widget_title', $instance['title']);
+                            $jsonurl = "http://api.twitter.com/1/statuses/user_timeline.json?screen_name=" . $author_tweets . "&count=3&nclude_entities=false&include_rts=false&exclude_replies=true&trim_user=true";
+                            $json = file_get_contents($jsonurl, 0, null, null);
+                            $json_output = (array)json_decode($json);
+                            if (!empty($json_output)):
+                                ?><p class="notes">author's latest tweets</p><ul><?php foreach ($json_output as $text): ?>
+                                        <li class="tweet"><?php echo $text->text ?></li>
+                                <?php endforeach; ?></ul>
+                                <p><a href="http://twitter.com/<?php echo $post_author['twitter']; ?>" title="Follow <?php echo $post_author['display-name']; ?> on Twitter">Follow <?php echo $post_author['display-name']; ?> on Twitter</a></p><?php
+            endif;
+        endif;
+        ?>
+                    </div><?php endif; ?>
+            </div>
+        </div><!-- .author-info -->
+        <div id="author-summary">
+            <div id="author-description" class="author-head">
+                <hgroup>
+                    <h1 class="author-name"><span class="vcard"><?php the_author() ?></span></h1>
+                    <h2 class="author-title"><?php echo $post_author['title']; ?></h2>
+                </hgroup>
+                <div id="bio"> <?php
+    // If a user ha s filled out their description, show a bio on their entries.
+    echo wp_kses_post($post_author['description']);
+                    ?></div>
+            </div>
+            <div id="author-articles">
+                <h3 class="banner">Articles from this author</h3>
+                <?php /* Start the Loop */ ?>
+                <?php
+                /* Since we called the_post() above, we need to
+                 * rewind the loop back to the beginning that way
+                 * we can run the loop properly, in full.
+                 */
+                rewind_posts(); $i=0;
+                ?>
+                <?php if (have_posts()) : ?>
+                                <ul class="article"><?php
+                    while ((have_posts()) && $i < 4 ) : the_post(); ?>
+                        <?php get_template_part('review', 'sidebar'); $i++ ?>
+                        <?
+                    endwhile; ?>
+                    </ul><?php
+                endif;
+                ?>
+            <?php else : ?>
+    <?php get_template_part('review', '404'); ?>
+<?php endif; ?>
+            </div></div><div class="clear"></div></div>
+</section><!-- #page -->
+<?php get_sidebar('author'); ?>
+<?php get_footer(); ?>

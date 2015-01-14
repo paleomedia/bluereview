@@ -1,0 +1,11 @@
+<div class="clear"></div>
+</div><!--/.constrain-->
+<footer id="footer" class="clear">
+    <div class="constrain"><?php $blue_custom_options = get_option('blue_theme_options'); ?>
+    <? if ($blue_custom_options['footText'] != "" || $blue_custom_options['footImg'] != ""): ?><p class="attribution"><? if ($blue_custom_options['footImg'] != ""): ?><? print($blue_custom_options['footText']) ?><img src="<? echo $blue_custom_options['footImg'] ?>" alt="footer image" /><? endif; ?></p><? endif; ?><?php wp_nav_menu( array( 'container' => 'nav', 'container_class' => 'foot-links', 'theme_location' => 'footer-links', 'fallback_cb' => 'none' ) ); ?>
+    <div class="clear"></div>
+    </div>
+</footer><!--#footer-->
+<?php wp_footer(); ?>
+</body>
+</html>

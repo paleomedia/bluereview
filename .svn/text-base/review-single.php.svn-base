@@ -1,0 +1,67 @@
+<article role="article" <?php post_class(get_post_format() . ' single'); ?>>
+    <header><div class="header-image">
+            <?php
+            $post_authors = get_coauthors();
+            foreach ($post_authors as $post_auth):
+            $post_author[$post_auth->ID] = blue_author_info($post_auth->ID);
+            $post_author[$post_auth->ID]['display-name'] = get_the_author_meta('display_name', $post_auth->ID);
+            $post_author[$post_auth->ID]['email'] = get_the_author_meta('email', $post_auth->ID);
+            $post_author[$post_auth->ID]['shortBio'] = get_the_author_meta('shortBio', $post_auth->ID);
+            endforeach;
+            ?>
+            <?php
+            if (has_post_thumbnail()) {
+                the_post_thumbnail();
+            }
+            ?></div>
+        <hgroup>
+            <h1 class="entry-title"><?php the_title(); ?></h1>
+            <h2 class="subtitle"><?php (function_exists('the_subtitle')) ? the_subtitle() : 'Testing Testing 123' ?></h2>
+            <div class="mobile-only"><h4 class="author-name mobile-only"><?php coauthors_posts_links(); ?></h4> | <?php the_date('m.d.Y', '<p class="mobile-only">', '</p>') ?></div>
+        </hgroup>
+    </header>
+    <div id="post-information" class="side-bit" role="note">
+        <div class="author-profile vcard">
+            <?php $count = count($post_author);?>
+            <?php foreach($post_author as $key=>$post_auth):?><div class='authorAvatar-<?php echo $count?>'><?php echo get_blue_avatar($key, 84);?></div><?php endforeach; ?>
+
+            <h4 class="author-name fn n"><?php coauthors_posts_links(); ?></h4>
+            <div id="cats"><?php
+$cats = get_the_category($post->ID);
+foreach ($cats as $key => $cat):
+    if (($cat->name == 'Feature') || ($cat->name == 'Uncategorized')):
+        unset($cats[$key]);
+    endif;
+endforeach;
+if (count($cats) > 0):
+    $cats = array_slice($cats, 0, 3);
+    ?>
+                    <ul class="cats"><?php foreach ($cats as $cat): ?>
+                            <li class="<?php echo $cat->slug ?>"><a href="/category/<? echo $cat->slug; ?>"><? echo $cat->name; ?></a></li><?php endforeach; ?></ul>
+                <?php endif; ?><?php echo get_the_date('m.d.Y', '<p>', '</p>') ?></div>
+            <div id="post-social">
+                <?php if(function_exists('st_makeEntries')): echo st_makeEntries(); endif; ?>
+            </div>
+        </div>
+        <div id="post-tag-list" class="post_tags notes">
+        <?php the_tags('tags ', ', ', ''); ?>
+        </div>
+    </div>
+    <div class="content">
+            <?php the_content(); ?>
+            <?php wp_link_pages(); ?>
+        <div id="author-description" class="author-head notes" role="note">
+<?php
+// If a user ha s filled out their short bio, show a bio on their entries.
+foreach ($post_author as $post_auth): ?>
+            <div class="authorbio"><?php
+    echo $post_auth['shortBio'];?>
+            </div><?php
+endforeach;
+?>
+        </div><!--.content-->
+    </div>
+        <footer>    
+</footer>
+<?php comments_template('', true); ?>	
+</article> <!--.single-->

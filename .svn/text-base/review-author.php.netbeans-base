@@ -1,0 +1,13 @@
+<article role="article" <?php post_class(get_post_format() . ' author'); ?>>
+		<header>
+                    <h1 class="entry-title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" rel="bookmark"><?php $postTitle = (get_the_title()) ? the_title() : 'untitled';
+            echo $postTitle; ?></a></h1>
+                    <?php the_date('m.d.Y', '<time>', '</time>') ?>
+                </header>	
+	<div class="content">
+			<?php wp_trim_excerpt(the_excerpt()); ?>
+			<?php wp_link_pages(); ?>
+		</div><!--.content-->
+                <footer></footer>
+		<?php comments_template( '', true ); ?>	
+</article> <!--.box-->

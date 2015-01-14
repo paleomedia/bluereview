@@ -1,0 +1,17 @@
+<?php get_header(); ?>
+<section id="content" class="single-post">
+        <?php
+        if (have_posts()) : while (have_posts()) : the_post();?>
+    <?php $postType = get_post_type(); ?>
+    <?php $type = in_category('data') ? 'data' : 'single'; ?>
+    <?php $type = $type == 'single' ? ($postType != 'post'? $postType : 'single') : $type; ?>
+        <?php get_template_part('review', $type) ?>
+            <?php
+            endwhile;
+            else:
+                 get_template_part('review', '404');
+        endif;
+        ?>
+</section><!--/#content-->
+<?php get_sidebar('post'); ?>
+<?php get_footer(); ?>

@@ -1,0 +1,309 @@
+jQuery.noConflict();
+(function($) {
+    
+    //when things are loaded
+    $(window).load(function(){
+        $('#featured-articles hgroup').addClass('caption');
+        $('#featured-articles').show();
+        
+        // calculate some things for later
+        
+        $('#menu-mobile').click(function(){
+            $('nav.primary-nav').slideToggle();
+            $('#header div.menu').slideToggle();
+        });
+        
+        $('dl.gallery-item').each(function(){
+            console.log($(this).find('em.credit').width());
+            $(this).find('em.credit').width($(this).find('.gallery-icon a').width());
+        });
+        
+                
+        $('.header-image').each(function(){
+            $(this).scrollTop(($(this).children('img').height()-$(this).height())/2);
+            $(this).scrollLeft(($(this).children('img').width()-$(this).width())/2);
+        
+});
+
+        // need to know how high our nav is for sticky menus
+        // using the tallest element that will be in the menu
+        var navHeight = $('#head-social').outerHeight();
+        
+        // need to know how much space is above our nav for sticky menus
+        var aboveHeight = $('#site-info').height()-20;
+        
+        // need to know how wide our article space is for masonry
+        var containerWidth = $('#articles').width();
+        
+        // set a default column width for articles
+        var columnSetWidth = 220;
+        
+        // and a gutter width
+        var gutterSetWidth = 15;
+        
+        // setup columns
+        var columnNumber = 2;
+        
+        $('.hide-form').hide();
+        $('.search-but').click(function(){
+            $('.hide-form').slideToggle(200);
+            $('#s').focus();
+        });
+        
+        // determine if we are wide enough for two columns
+        calcSize(containerWidth, gutterSetWidth, columnNumber);
+
+                                    
+        // Set widget-like articles
+        // and masonry
+        // and cycle
+        if($(window).width() > 500){
+        widgetize($('#articles article'));
+
+        // and run with it - init masonry
+        setMasonry(columnSetWidth, gutterSetWidth);
+        setCycle();
+        }
+        
+        //when resized
+        $(window).resize(function() {
+            
+            //get the new width
+            var containerWidth = $('#articles').width();
+            
+            //remath all the bits
+            calcSize(containerWidth, gutterSetWidth, columnNumber);
+            
+            //reflow the content
+            setMasonry(columnSetWidth, gutterSetWidth);
+
+        });
+        
+        //when scroll
+        $(window).scroll(function(){
+            if($(window).width() > 500){
+            //if scrolled down more than the header’s height
+            if (($(window).scrollTop() + $(window).height()) >= $('body').height()){
+                $('#footer').addClass('reallyDone');
+            }
+            else
+            if ($(window).scrollTop() > aboveHeight){
+ 
+                // if yes, sticky our menu
+                $('#header-sticky-menu').css('top','0').addClass('sticky-nav').next()
+                .css('padding-top', $('#header-sticky-menu').height());
+                
+                // and our footer while we're at it
+                $('#footer').addClass('sticky-nav').css('bottom','0').prev()
+                .css('padding-bottom',navHeight);
+                $('#footer').removeClass('reallyDone')
+            }  
+            else
+            {
+ 
+                // if not, well, stick with defaults
+                $('#header-sticky-menu').removeClass('sticky-nav').next()
+                .css('padding-top','0');
+                $('#footer').removeClass('reallyDone');
+                $('#footer').removeClass('sticky-nav').prev()
+                .css('padding-bottom', '0');
+            }
+            }
+        });
+    });
+    
+    function widgetize(elements){
+        elements.not('#post-0').each(function() {
+            $(this).wrap('<a href="'+ $(this).find('a').attr('href') + '">');
+            $(this).children('div').prepend($(this).find('hgroup').contents().clone()).height($(this).children('div').height() + $(this).children('footer').outerHeight());
+            var restHeight = $(this).children('div').height()
+            $(this).find('hgroup').addClass('caption');
+            $(this).addClass('widget').children().addClass('widget');
+            var headHeight = $(this).find('header img').height()
+            if (headHeight > restHeight){
+                $(this).height(headHeight);
+                $(this).children('div.content').height(headHeight);
+                $(this).children('header').height(headHeight);
+            }
+            else{
+                $(this).height(restHeight);
+                $(this).children('header').height(restHeight);
+            }
+            $(this).not('.gallery').mouseenter(function() {
+            $(this).children('header').fadeOut(300);
+        }).mouseleave(function() {
+            $(this).not('.gallery').children('header').fadeIn(300);
+        });
+        });
+    }
+    
+    // Getting the slide ball rolling
+
+
+function setCycle() {
+            $('#featured-articles').cycle({
+                pauseOnPagerHover: 1,
+                fx: 'scrollHorz',
+                next:   '#pager-next', 
+                prev:   '#pager-prev',
+                pager:  '#pager-nav',
+                slideExpr: 'article',
+                autostop:      1,
+                autostopCount: 5,
+                fit: 1,
+                height: 410
+            });
+            
+            var ht = 100;
+            var width = $('.format-gallery .content').width() - 40;
+            
+            $('.format-gallery div.gallery dl').each(function(){
+                if ($(this).height() > ht){
+                    ht = $(this).outerHeight()
+                }
+            })
+            
+            $('.format-gallery div.gallery').prepend('<div class="pager" id="pager-prev">&lt;</div><div class="pager" id="pager-next">&gt;</div>');
+            $('.format-gallery div.content .gallery').after('<div id="pager-nav"></div>');
+            $('.format-gallery .side-bit').empty();
+            $('.format-gallery div.gallery').cycle({
+                fx: 'scrollHorz',
+                next:   '#pager-next', 
+                prev:   '#pager-prev',
+                pager:  '#pager-nav',
+                slideExpr: 'dl',
+                containerResize: 0,
+                height: (ht + 30),
+                width:width,
+                timeout:0
+            });
+
+}
+
+    // masonry settings
+    function setMasonry(columnSetWidth, gutterSetWidth){
+        
+        // wait for images to fit things to the screen
+        $('#articles').imagesLoaded(function(){
+            
+            // do masonry on the articles
+            $('#articles').masonry({
+                itemSelector: 'article',
+                
+                // animation is why we're here right?
+                isAnimated: true, 
+                
+                // and resizing is the whole "responsive" thing
+                isResizable: true, 
+                
+                // and we picked this number earlier
+                gutterWidth: gutterSetWidth,
+                
+                columnWidth: columnSetWidth,
+                
+                // and infinity looks better if we animate from the bottom
+                isAnimatedFromBottom: true
+            });
+        });
+        setInfinity();
+    }
+    
+    // Is there enough room for two columns?
+    // if not take up all the space, even after resize
+    // Yay! math
+    function calcSize(containerWidth, gutterSetWidth, columnNumber){
+        
+        // 320 is one column
+        if (containerWidth < 440){
+            columnNumber = 1;
+            columnSetWidth = containerWidth;
+            gutterSetWidth = 0;
+        }
+        
+        // 440 is two
+        if (containerWidth >= 440 && containerWidth < 700){
+            columnNumber = 2;
+            columnSetWidth = containerWidth/2;
+        }
+        
+        // Between 660 and 960  we can fit three columns
+        if (containerWidth >= 700 && containerWidth < 960){
+            columnNumber = 3;
+            columnSetWidth = containerWidth/3;
+        }
+        
+        
+        // and, well, since we don't get wider than 960 
+        // (actually we don't get wider than 75% of 960 
+        // but I'm thinking that should change)
+        // we can cap at 1/3 of 960 
+        if (containerWidth >= 960){
+            columnSetWidth = 320;
+            columnNumber = 3;
+        }
+        
+        // Oh, and since any inline styles we add to the articles themselves are axed by masonry
+        // the width will have to be set in the head section
+        // Remember, we didn't know the width until we mathed it
+        
+        $('head').append('<style type="text/css">article{width:' + ((columnSetWidth-gutterSetWidth)-20) + 'px;}</style>');
+        if (columnNumber > 1){$('head').append('<style type="text/css">article.category-feature{ width:' + (((columnSetWidth - gutterSetWidth)*2)) + 'px;}</style>');}
+    }
+    
+    // Right - and infinite scrolling
+    function setInfinity(){
+        
+        // the articles div is where articles go
+        $('#articles').infinitescroll({
+            // and our next and prev stuff needs to be there 
+            // for infinite scrolling to act on
+            navSelector  : "div#nextPrev",            
+            nextSelector : "div#nextPrev a:first",    
+            
+            // and we are loading more articles
+            itemSelector : "#articles article.post",
+            
+            // not debugging
+            debug        : false, 
+            
+            // Loading bits
+            loading: {
+                finishedMsg: "No more posts to load.",
+                img: "http://i.imgur.com/6RMhx.gif",
+                msgText: "Loading more posts...",
+                speed: 'slow'
+            },
+            errorCallback: function () {
+                $('#done').addClass('reallyDone');
+                $('#done p').text('That\'s all we got.');
+            }
+        },
+        
+        // so after we load our infinite elements, we need to do stuff with them
+        function( newElements ) {
+            
+            // like hide them while they are loading
+            var newElems =  $( newElements ).css({
+                opacity: 0
+            });
+            
+            // and wait to do masonry until the images are done
+            newElems.imagesLoaded(function(){
+                
+                        if($(window).width() > 500){
+        widgetize(newElems);
+        }
+                
+                // show elems now they're ready
+                newElems.animate({
+                    opacity: 1
+                });
+                
+                // then we need to add them to the div
+                $('#articles').masonry( 'appended', newElems, true );
+            });
+        });
+    
+    }
+    
+})(jQuery);

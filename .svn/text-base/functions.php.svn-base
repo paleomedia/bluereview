@@ -1,0 +1,390 @@
+<?php
+add_action('after_setup_theme', 'blue_review_theme_prep');
+
+function show_me_the_available_functions() {
+    $x = get_defined_functions();
+    $x = $x['user'];
+    asort($x);
+    ?><ul style="display:none" ><?php foreach ($x as $y) { ?>
+
+            <?
+            print "$y" . "<br/>";
+        }
+        ?></ul><?php
+}
+
+//show_me_the_available_functions();
+// more by authors Widget
+require_once ( get_template_directory() . '/includes/more-by-authors-widget.php' );
+
+// Twitterers Widget
+require_once ( get_template_directory() . '/includes/twitterers-widget.php' );
+
+// Recent Posts Widget
+require_once ( get_template_directory() . '/includes/recent-posts-widget.php' );
+
+// Recent Blog Posts Widget
+require_once ( get_template_directory() . '/includes/recent-blog-posts.php' );
+
+// Author profile form
+require_once ( get_template_directory() . '/includes/author-meta-form.php' );
+
+// Author list widget
+require_once ( get_template_directory() . '/includes/recent-authors.php' );
+
+// Gallery tweaks
+require_once ( get_template_directory() . '/includes/gallery-tweaks.php' );
+
+function blue_review_theme_prep() {
+
+// Enable Post Formats
+
+    add_theme_support('post-formats', array('aside', 'gallery', 'image', 'quote', 'link', 'audio', 'chat'));
+
+// Add support for nav menus
+
+    add_theme_support('nav-menus');
+
+// Add support for custom header
+    $defaults = array(
+        'default-image' => get_template_directory_uri() . '/images/header-tag.jpg',
+        'random-default' => false,
+        'width' => 950,
+        'height' => 152,
+        'flex-height' => true,
+        'flex-width' => true,
+        'default-text-color' => '',
+        'header-text' => true,
+        'uploads' => true,
+        'wp-head-callback' => '',
+        'admin-head-callback' => '',
+        'admin-preview-callback' => '',
+    );
+    add_theme_support('custom-header', $defaults);
+
+// Set up featured images
+    add_theme_support('post-thumbnails');
+    set_post_thumbnail_size( 660, 300, true );
+
+    // Add image sizes
+    add_image_size('homepage-thumb', 200, 415); // Soft Crop Mode
+    add_image_size('singlepost-thumb', 660, 300); // Unlimited Height Mode
+// Set up sidebars
+    register_sidebar(array('name' => 'Homepage Sidebar', 'id' => 'homepage'));
+    register_sidebar(array('name' => 'Single Page Sidebar', 'id' => 'single-page'));
+    register_sidebar(array('name' => 'Archive Sidebar', 'id' => 'archive'));
+    register_sidebar(array('name' => 'Single Post', 'id' => 'single-post'));
+    register_sidebar(array('name' => 'Author Page', 'id' => 'author'));
+}
+
+// Set up javascript
+function add_blue_scripts() {
+    
+    if( !is_admin()){
+    wp_enqueue_script('jquery');
+    wp_register_script('html5', get_template_directory_uri() . '/js/html5.js');
+    wp_enqueue_script('html5');
+    wp_register_script('masonry', get_template_directory_uri() . '/js/mason/jquery.masonry.min.js');
+    wp_enqueue_script('masonry');
+    wp_register_script('infinity', get_template_directory_uri() . '/js/jquery.infinitescroll.min.js');
+    wp_enqueue_script('infinity');
+    wp_register_script('masonry-init', get_template_directory_uri() . '/js/script.js');
+    wp_enqueue_script('masonry-init');
+    wp_register_script('cycle', get_template_directory_uri() . '/js/jquery.cycle.all.latest.js');
+    wp_enqueue_script('cycle');
+    }
+}
+
+// Create settings for menus
+
+function register_blue_menus() {
+    register_nav_menus(
+            array(
+                'primary-navigation' => __('Primary Navigation'),
+                'footer-links' => __('Footer Links')
+            )
+    );
+}
+
+// Set up filters so images work responsively
+
+function remove_blue_size_attribute($html) {
+    $html = preg_replace('/(width|height)=\"\d*\"\s/', "", $html);
+    return $html;
+}
+
+// Set up filter to modify excerpt as needed
+
+function blue_excerpt_length($length) {
+    return 7;
+}
+
+// Set up filter for html in bio
+remove_filter('pre_user_description', 'wp_filter_kses');
+
+function blue_excerpt_more($more) {
+    return ' ...';
+}
+
+// Set up filter to add field to image attachments
+
+function add_blue_credit($form_fields, $post) {
+
+  $form_fields["credit"] = array(
+    "label" => __("Credit"),
+    "input" => "text", 
+    "value" => get_post_meta($post->ID, "_credit", true),
+    "helps" => __("Photo Credit"),
+  );
+   return $form_fields;
+}
+// now attach our function to the hook
+add_filter("attachment_fields_to_edit", "add_blue_credit", null, 2);
+
+function save_blue_credit($post, $attachment) {
+  if( isset($attachment['credit']) ){
+    update_post_meta($post['ID'], '_credit', $attachment['credit']);
+  }
+  return $post;
+}
+// now attach our function to the hook.
+add_filter("attachment_fields_to_save", "save_blue_credit", null , 2);
+
+// Show credit when post is displayed
+
+add_filter('image_send_to_editor','blue_image_to_editor',10,2);
+
+function blue_image_to_editor($html, $id){
+        
+        $credit = get_post_meta($id, "_credit", true);
+        $html .= "<em class='credit'>{$credit}</em><br />";
+        
+        return $html;
+}
+
+
+add_filter('excerpt_more', 'blue_excerpt_more');
+add_filter('post_thumbnail_html', 'remove_blue_size_attribute', 10);
+add_filter('get_the_excerpt ', 'remove_blue_size_attribute', 10);
+add_filter('excerpt_length', 'blue_excerpt_length');
+
+
+// Tell WordPress about menus
+
+add_action('init', 'register_blue_menus');
+
+// Tell WordPress about Masonry
+
+add_action('wp_enqueue_scripts', 'add_blue_scripts');
+
+// Make images work all of the time
+function get_blue_images($post_id, $the_content) {
+    $image_tag = '';
+    $args = array(
+        'numberposts' => 1,
+        'order' => 'ASC',
+        'post_mime_type' => 'image',
+        'post_parent' => $post_id,
+        'post_status' => null,
+        'post_type' => 'attachment'
+    );
+
+    $attachments = get_children($args);
+
+
+    if ($attachments) {
+        $attachment = array_shift($attachments);
+        $image_tag = wp_get_attachment_image($attachment->ID, 'thumbnail') ? wp_get_attachment_image($attachment->ID, 'thumbnail') : wp_get_attachment_image($attachment->ID, 'full');
+    } else {
+        // Try to get the image for the linked image (not attached)
+        $match_regex = '~<img [^\>]*\ />~';
+        preg_match($match_regex, $the_content, $matches);
+        if (isset($matches[0])) {
+            $image_tag = array_shift($matches);
+        }
+    }
+
+    if (!empty($image_tag)) {
+        $image_tag = preg_replace('/(width|height)=\"\d*\"\s/', "", $image_tag);
+        return $image_tag;
+    }
+    return false;
+}
+
+function register_blue_widgets(){
+    register_widget( "more_by_author" );
+    register_widget( "tweets_by_author" );
+    register_widget( "Recent_Blue_Blog_Posts" );
+    register_widget( "Recent_Blue_Posts" );
+    register_widget( "recent_authors" );
+    unregister_widget( "WP_Widget_Recent_Posts" );
+}
+
+// register bonus widgets
+add_action('widgets_init', 'register_blue_widgets');
+
+
+add_action('personal_options_update', 'know_more_about_authors');
+add_action('edit_user_profile_update', 'know_more_about_authors');
+
+function know_more_about_authors($user_id) {
+
+    if (!current_user_can('edit_user', $user_id)) {
+        return false;
+    }
+
+    /* Copy and paste this line for additional fields. Make sure to change 'twitter' to the field ID. */
+    update_usermeta($user_id, 'title', wp_strip_all_tags($_POST['title']));
+    update_usermeta($user_id, 'avatar', esc_url_raw($_POST['avatar']));
+    update_usermeta($user_id, 'shortBio', wp_strip_all_tags($_POST['shortBio']));
+    update_usermeta($user_id, 'twitter', wp_strip_all_tags($_POST['twitter']));
+    update_usermeta($user_id, 'gplus', esc_url_raw($_POST['gplus']));
+    update_usermeta($user_id, 'facebook', esc_url_raw($_POST['facebook']));
+    $books = array(
+        'book1' => array(
+            'title' => wp_strip_all_tags($_POST['booktitle1']),
+            'url' => esc_url_raw($_POST['bookurl1']),
+            'cover' => esc_url_raw($_POST['book1'])
+        ),
+        'book2' => array(
+            'title' => wp_strip_all_tags($_POST['booktitle2']),
+            'url' => esc_url_raw($_POST['bookurl2']),
+            'cover' => esc_url_raw($_POST['book2'])
+        ),
+        'book3' => array(
+            'title' => wp_strip_all_tags($_POST['booktitle3']),
+            'url' => esc_url_raw($_POST['bookurl3']),
+            'cover' => esc_url_raw($_POST['book3'])
+            ));
+    update_usermeta($user_id, 'books', $books);
+}
+
+// prep user data for display
+
+function mapping_user($a) {
+    return $a[0];
+}
+
+;
+
+function blue_author_info($user_id) {
+    if ($all_meta_for_user = get_user_meta($user_id)) :
+        $user_meta = array_map('mapping_user', get_user_meta($user_id));
+        $user_meta['books'] = unserialize($user_meta['books']);
+        return $user_meta;
+
+    else:
+        return false;
+    endif;
+}
+
+// Theme options for social bits
+require_once ( get_template_directory() . '/blue-options.php' );
+
+// Callback function to insert 'styleselect' into the $buttons array
+function blue_mce_buttons_2($buttons) {
+    array_unshift($buttons, 'styleselect');
+    return $buttons;
+}
+
+// Register our callback to the appropriate filter
+add_filter('mce_buttons_2', 'blue_mce_buttons_2');
+
+// Callback function to filter the MCE settings
+function blue_mce_before_init_insert_formats($init_array) {
+    // Define the style_formats array
+    $style_formats = array(
+        // Each array child is a format with it's own settings
+        array(
+            'title' => '.pull-sidenote-left',
+            'inline' => 'span',
+            'classes' => 'pull-sidenote-left',
+            'wrapper' => true,
+        ),
+        array(
+            'title' => '.just-the-facts',
+            'block' => 'div',
+            'classes' => 'just-the-facts',
+            'wrapper' => true,
+        ),
+        array(
+            'title' => '.dropcaps',
+            'block' => 'p',
+            'classes' => 'dropcaps',
+            'wrapper' => false,
+        ),
+    );
+    // Insert the array, JSON ENCODED, into 'style_formats'
+    $init_array['style_formats'] = json_encode($style_formats);
+
+    return $init_array;
+}
+
+add_filter('mce_buttons','buts_back');
+
+function buts_back($mce_buttons) {
+
+$pos = array_search('wp_more',$mce_buttons,true);
+
+if ($pos !== false) {
+
+$tmp_buttons = array_slice($mce_buttons, 0, $pos+1);
+
+      $tmp_buttons[] = 'wp_page';
+
+      $mce_buttons = array_merge($tmp_buttons, array_slice($mce_buttons, $pos+1));
+
+  }
+
+return $mce_buttons;
+
+}
+
+// and add editor support for it:
+add_editor_style('editor-style.css');
+
+function validate_blue_gravatar($email) {
+    // Craft a potential url and test its headers
+    $hash = md5(strtolower(trim($email)));
+    $uri = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+    $headers = @get_headers($uri);
+    if (!preg_match("|200|", $headers[0])) {
+        $has_valid_avatar = FALSE;
+    } else {
+        $has_valid_avatar = TRUE;
+    }
+    return $has_valid_avatar;
+}
+
+// Attach callback to 'tiny_mce_before_init'
+add_filter('tiny_mce_before_init', 'blue_mce_before_init_insert_formats');
+
+add_action('show_user_profile', 'get_more_about_authors');
+add_action('edit_user_profile', 'get_more_about_authors');
+
+function get_blue_avatar($authorID, $size = 72) {
+    if (validate_blue_gravatar(get_the_author_meta('user_email', $authorID))) {
+        $avatarlink = get_avatar($authorID, $size);
+        $match_regex = '~<img [^\>]*\ />~';
+        preg_match($match_regex, $avatarlink, $matches);
+        print_r($matches);
+            if (isset($matches[0])) {
+                $avatar = array_shift($matches);
+            }
+    }
+    else{
+        if (get_the_author_meta('avatar', $authorID)) {
+            $avatar = '<img src="' . get_the_author_meta('avatar', $authorID) . '" class="avatar photo avatar-default" width="' . $size .'" />';
+        }
+        else{
+            $avatarlink = get_avatar($authorID, $size);
+            $match_regex = '~<img [^\>]*\ />~';
+            preg_match($match_regex, $avatarlink, $matches);
+            if (isset($matches[0])) {
+                $avatar = array_shift($matches);
+            }
+        }
+    }
+    return $avatar;
+}
+    ?>

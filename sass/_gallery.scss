@@ -1,0 +1,97 @@
+.gallery{
+    background-color: black;
+    max-width: 100%;
+    position: relative;
+}
+
+.gallery--wrap{
+    width:650px;
+}
+.gallery .pager{
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.65)), color-stop(50%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+    padding: 1em;
+    top: 3em;
+    width: 1em;
+    float: left;
+}
+.gallery--wrap #pager-nav {
+    margin: 1em 0;
+    text-align: center;
+}
+.gallery #pager-prev {
+left: 0;
+}
+.gallery #pager-next {
+right: 0;
+text-align: right;
+}
+.gallery--wrap #pager-nav a.activeSlide {
+color: black;
+background-color: gray;
+}
+
+.gallery--wrap #pager-nav a {
+padding: .25em 0.6875em;
+font-size: 1.1em;
+margin: .2em;
+background-color: black;
+color: white;
+min-width: 1.5em;
+border: 1px solid black;
+}
+.gallery .gallery-heading {
+color: $white;
+font-size: 1.1em;
+font-family: $sans-serif;
+padding-bottom: 10px;
+}
+.gallery .credit{
+    color: $text-light-gray;
+    text-align: right;
+    display: block;
+    margin: 0 auto;
+    font-size: 14px;
+    margin-right: 35px;
+}
+.gallery .pager {
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.65)), color-stop(50%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+    padding: 1em;
+    top: 3em;
+    width: 1em;
+    float: left;
+    text-shadow: 1px 1px gray;
+    position: absolute;
+    max-height: 410px;
+    z-index: 98;
+    font-weight: bold;
+    font-size: 2.5em;
+    color: white;
+    cursor: pointer;
+}
+.gallery-caption{
+    a{
+    color: $text-light-gray;
+}
+    color: $text-light-gray;
+    padding: 10px;
+}
+.gallery-item{
+    display: none;
+}
+.gallery-item:first-child{
+    display: block;
+}

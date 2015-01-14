@@ -1,0 +1,18 @@
+<?php get_header(); ?>
+<section id="content" class="list-page category blog">
+    <img id="bloghead" src="<? echo get_stylesheet_directory_uri() ?>/images/bloghead.png" alt="blog logo" />
+    <div id="articles">
+        <?php
+        if (have_posts()) : while (have_posts()) : the_post();?>
+                <?php get_template_part('review', 'blurb') ?>
+            <?php
+            endwhile;
+            else:
+                 get_template_part('review', '404');
+        endif;
+        ?>
+    </div><!--/#articles -->
+    <div id="nextPrev"><?php print (previous_posts_link('« Newer Entries', 0)); ?><?php print (next_posts_link('Older Entries »', 0)); ?></div>
+</section><!--/#content-->
+<?php get_sidebar('archive-sidebar'); ?>
+<?php get_footer(); ?>

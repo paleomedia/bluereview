@@ -1,0 +1,36 @@
+/* 
+    Document   : editor-style
+    Created on : Oct 10, 2012, 3:04:17 PM
+    Author     : aubrey
+    Description:
+        Gotta make tinyMCE show the pullquotes
+*/
+
+.pull-sidenote-left:before{
+    content:"{";
+    display:inline;
+}
+
+.pull-sidenote-left:after{
+    content:"}";
+    display:inline;
+}
+
+.pull-sidenote-left{
+    background-color: lightgoldenrodyellow;
+}
+
+.just-the-facts{
+    border: 1px gray solid;
+    border-radius: 7px;
+    padding:.5em;
+    margin:.5em;
+    width:60%;
+    float:right;
+}
+
+p.dropcaps:first-letter,body p:first-child:first-letter {
+    font-size: 4em;
+    float: left;
+    padding-right: .2em;
+    line-height: 1; }

@@ -1,0 +1,67 @@
+<article role="article" <?php post_class(get_post_format() . ' single'); ?>>
+    <header>
+                <img id="bloghead" src="<? echo get_stylesheet_directory_uri() ?>/images/bloghead.png" alt="blog logo" />
+        <?php
+        if (has_post_thumbnail()) {
+            the_post_thumbnail();
+        } 
+        ?>
+        <hgroup>
+        <h1 class="entry-title"><?php $postTitle = (get_the_title()) ? the_title() : 'untitled';
+            echo $postTitle; ?></h1>
+        <h2 class="subtitle"><?php if (function_exists('the_subtitle')): the_subtitle(); ?><?php endif ?></h2>
+        <div class="mobile-only"><h4 class="author-name mobile-only"><?php coauthors_posts_links(); ?></h4> | <?php the_date('m.d.Y', '<p class="mobile-only">', '</p>') ?></div>
+        </hgroup>
+    </header>
+    <div id="post-information" class="side-bit" role="note">
+    <div class="author-profile vcard">
+        <?php echo get_avatar(get_the_author_meta('user_email'), '96'); ?>
+
+        <h4 class="author-name fn n"><?php the_author_posts_link(); ?></h4>
+        <div id="cats"><p><?php
+        $cats = get_the_category($post->ID);
+        foreach ($cats as $key=>$cat):
+            if ( $listAuthor(strtolower($cat->name) == 'feature') || ($cat->name == 'Uncategorized') ):
+                unset($cats[$key]);
+            endif;
+        endforeach;
+        if ( count($cats) > 0 ):
+        $cats = array_slice($cats, 0, 1);
+foreach ($cats as $cat):
+    ?>
+                <img src="<?php echo get_template_directory_uri() ?>/images/categories/<?php echo $cat->slug; ?>.png" /><a href="/category/<? echo $cat->slug; ?>"><? echo $cat->name; ?></a> <?php the_date('m.d.Y', '<time>', '</time>') ?><?php endforeach; endif; ?>
+        </p></div>
+        <ul id="author-social">
+        <?php if (get_the_author_meta('twitter')) : ?>
+            <li class="twitter">
+            <a href="<?php the_author_meta('twitter'); ?>" title="Follow <?php the_author_meta('display_name'); ?> on Twitter"></a>
+            </li>
+        <?php endif;
+        if (get_the_author_meta('facebook')) : ?>
+            <li class="facebook">
+                <a href="<?php the_author_meta('facebook'); ?>" title="Like <?php the_author_meta('display_name'); ?> on facebook"></a>
+            </li>
+    <?php endif;
+        if (get_the_author_meta('gplus')) : ?>
+            <li class="gplus">
+                <a href="<?php the_author_meta('gplus'); ?>" title="Follow <?php the_author_meta('display_name'); ?> on Google Plus" /></a>
+            </li>
+            <?php endif;
+        if (get_the_author_meta('email')) : ?>
+            <li class="email">
+                <a href="mailto:<?php the_author_meta('email'); ?>" title="email <?php the_author_meta('display_name'); ?>"></a>
+            </li>
+    <?php endif; ?> 
+        </ul>
+    </div>
+        <div id="post-tag-list" class="post_tags">
+        <?php the_tags('tags',', ',''); ?>
+        </div>
+    </div>
+    <div class="content">
+        <?php the_content(); ?>
+<?php wp_link_pages(); ?>
+    </div><!--.content-->
+    <footer></footer>
+<?php comments_template('', true); ?>	
+</article> <!--.single-->
