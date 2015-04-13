@@ -45,7 +45,8 @@
 				float: left;
 				margin-top: 10px;
 				text-align: center;
-				width: {$itemwidth}%;			}
+				width: 100%;             }
+			//	width: {$itemwidth}% changed in line above
 			.gallery img {
 				border: 2px solid #cfcfcf;
 			}
