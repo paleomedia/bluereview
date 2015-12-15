@@ -751,7 +751,7 @@ input.search-sub {
     font-weight: lighter;
     font-size: 14px;
     -ms-word-break: break-all;
-    word-break: break-all;
+    word-break: normal;
     word-break: break-word;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
