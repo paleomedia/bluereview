@@ -4,7 +4,7 @@
         <meta charset="<?php bloginfo('charset'); ?>" />
         <title><?php is_home() ? bloginfo('description') : wp_title(''); ?> | <?php bloginfo('name'); ?> </title>
         <link rel="profile" href="http://gmpg.org/xfn/11" />
-        <link href='http://fonts.googleapis.com/css?family=Oswald:400,300|Carrois+Gothic+SC' rel='stylesheet' type='text/css' />
+        <link href='http://fonts.googleapis.com/css?family=Oswald:400,300|Carrois+Gothic+SC' rel='stylesheet' type='text/css' />        
         <link rel="stylesheet" href="<?php echo get_stylesheet_uri(); ?>" type="text/css" media="screen" />
         <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
         <meta name="viewport" content="width=device-width" /> 
